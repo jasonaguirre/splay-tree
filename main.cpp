@@ -47,7 +47,7 @@ private:
         postorderHelper(curr->left);
         cout << curr -> data << endl;
         postorderHelper(curr->right);
-       // cout << curr -> data;
+       // cout << curr -> data << endl;
     }
 
 //creates our node and providing it a key value and setting left and right pointer branches to NULL
