@@ -17,6 +17,7 @@ typedef struct _node node;
 class SplayTree {
 private:
     node* root; //declares variable "root" as node pointer type.
+    string prev;
 
 //Allows us to recursivly print out the Tree before it is ordered (parent, left, right)
     void preorderHelper(node* curr) {
@@ -38,14 +39,15 @@ private:
         inorderHelper(curr->right);
     }
 
-//Allows us to recursivly print out the Tree before it is ordered (left, right, parent)
+//Allows us to recursivly print out the Tree after it is ordered (left, right, parent)
     void postorderHelper(node* curr) {
         if (curr == NULL) {
             return;
         }
         postorderHelper(curr->left);
+        cout << curr -> data << endl;
         postorderHelper(curr->right);
-        cout << curr->data << endl;
+       // cout << curr -> data;
     }
 
 //creates our node and providing it a key value and setting left and right pointer branches to NULL
@@ -146,7 +148,7 @@ private:
         return newNode;
     }
 
-node* deleteNode(node* curr, string key) {
+    node* deleteNode(node* curr, string key) {
         if (curr == NULL) {
             return curr;
         }
@@ -226,9 +228,12 @@ public:
 
 //main function accepts file names as arguments.
 int main(int argc, char const *argv[]){
+    
     SplayTree sTree; //creating an new splay tree called sTree
+    
     int count = 0;  //set counter for amount of nodes in file
     ifstream inp(argv[1]); //uses argv[1] as file and naming it inp
+    
     if (inp.is_open()) { //while the file is open, insert all the values of the file into the sTree and counting them
         string data;
         while (getline(inp,data)) {
@@ -241,11 +246,13 @@ int main(int argc, char const *argv[]){
         sTree.postorder();
         cout << "\n" << count <<" Students enrolled\n\n";
 
-//allows user to manipulate the tree basically as much as they want and to escape the program just ytpe delete
+        //allows user to manipulate the tree basically as much as they want and to escape the program just ytpe delete
         for (int i = 0; i < 1000; i++){
+            
             string func; 
             cout<< "Input Function: Insert, Delete, Search, Print, Complete\n";
             cin >> func; //takes in user input corresponding to ope of 5 prompts
+            
             if (func == "Insert"){ //if user types insert, console will prompt for name, insert into the tree
                 cout<<"Enter Name to Insert: ";
                 cin >> data;
@@ -269,12 +276,12 @@ int main(int argc, char const *argv[]){
                 cout<<"Enter Name to Search: ";
                 cin >> data;
                 if (sTree.search(data)) {
-            cout << data << " is found in the tree.\n\n";
-            cout << "\n" << count <<" Students enrolled\n\n"; //and give count
-            } 
-            else {
-            cout << data << " is not found in the tree.\n\n";
-            }
+                    cout << data << " is found in the tree.\n\n";
+                    cout << "\n" << count <<" Students enrolled\n\n"; //and give count
+                } 
+                else {
+                    cout << data << " is not found in the tree.\n\n";
+                }
             }
             if (func == "Complete"){ //if user types complete program ends
                 break;
