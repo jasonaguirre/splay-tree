@@ -17,7 +17,6 @@ typedef struct _node node;
 class SplayTree {
 private:
     node* root; //declares variable "root" as node pointer type.
-    string prev;
 
 //Allows us to recursivly print out the Tree before it is ordered (parent, left, right)
     void preorderHelper(node* curr) {
@@ -39,15 +38,14 @@ private:
         inorderHelper(curr->right);
     }
 
-//Allows us to recursivly print out the Tree after it is ordered (left, right, parent)
+//Allows us to recursivly print out the Tree before it is ordered (left, right, parent)
     void postorderHelper(node* curr) {
         if (curr == NULL) {
             return;
         }
         postorderHelper(curr->left);
-        cout << curr -> data << endl;
         postorderHelper(curr->right);
-       // cout << curr -> data;
+        cout << curr->data << endl;
     }
 
 //creates our node and providing it a key value and setting left and right pointer branches to NULL
@@ -81,6 +79,7 @@ private:
             return NULL;
         }
         if (curr->data == key) { //if the data at curr node is equal to the key in the function parameter return curr node
+            //cout<<key<< " is already in the tree \n";
             return curr;
         }
 
@@ -148,7 +147,7 @@ private:
         return newNode;
     }
 
-    node* deleteNode(node* curr, string key) {
+node* deleteNode(node* curr, string key) {
         if (curr == NULL) {
             return curr;
         }
@@ -179,6 +178,25 @@ private:
         return curr;
     }
 
+    void printHelper(node* root, string indent, bool last) {
+        // print the tree structure on the screen
+        if (root != nullptr) {
+           cout<<indent;
+           if (last) {
+              cout<<"-->";
+              indent += " ";
+           } else {
+              cout<<"-->";
+              indent += "| ";
+           }
+
+           cout<<root->data<<endl;
+
+           printHelper(root->left, indent, false);
+           printHelper(root->right, indent, true);
+        }
+    }
+
 //public accessable information from "main"
 public:
 //always start off splay tree with root being NULL
@@ -188,11 +206,17 @@ public:
 
 //inserts node with value of key into appropriate location in tree using insertHelper
     void insert(string key) {
+        int duplicate;
         if (root == NULL) { //unless root is NULL then the newly created node is the first node
             root = createNode(key);
         }
-
         root = insertHelper(root, key);
+        if (root->data == key) { //once the data in the curr node == key we return the mem address of curr
+            cout<<key<< " is already in the tree \n";
+            duplicate ++;
+            cout<<"Number of duplicates: "<< duplicate << endl;
+        }
+    
     }
 
 //searchs through tree using the splay function using the key of the node until the value is found or false is returned 
@@ -224,16 +248,17 @@ public:
         deleteNode(root, key);
     }
 
+        void PrintTree() {
+        printHelper(this->root, "", true);
+    }
+
 };
 
 //main function accepts file names as arguments.
 int main(int argc, char const *argv[]){
-    
     SplayTree sTree; //creating an new splay tree called sTree
-    
     int count = 0;  //set counter for amount of nodes in file
     ifstream inp(argv[1]); //uses argv[1] as file and naming it inp
-    
     if (inp.is_open()) { //while the file is open, insert all the values of the file into the sTree and counting them
         string data;
         while (getline(inp,data)) {
@@ -242,17 +267,15 @@ int main(int argc, char const *argv[]){
         }
 
         //prints out nodes after thet have been ordered to begin 
-        cout << "\nPrinting the tree in postorder: " << endl; 
-        sTree.postorder();
+        cout << "\nPrinting the tree in order: " << endl; 
+        sTree.inorder();
         cout << "\n" << count <<" Students enrolled\n\n";
 
-        //allows user to manipulate the tree basically as much as they want and to escape the program just ytpe delete
+//allows user to manipulate the tree basically as much as they want and to escape the program just ytpe delete
         for (int i = 0; i < 1000; i++){
-            
             string func; 
             cout<< "Input Function: Insert, Delete, Search, Print, Complete\n";
             cin >> func; //takes in user input corresponding to ope of 5 prompts
-            
             if (func == "Insert"){ //if user types insert, console will prompt for name, insert into the tree
                 cout<<"Enter Name to Insert: ";
                 cin >> data;
@@ -268,20 +291,20 @@ int main(int argc, char const *argv[]){
                 cout << "\n" << --count <<" Students enrolled\n\n"; //and subrtact 1 from count 
             }
             if (func == "Print"){ //if user types print, console will print out the updated list of students
-                cout << "\nPrinting the tree in postorder: " << endl; 
-                sTree.postorder();
+                cout << "\nPrinting the tree: " << endl; 
+                sTree.PrintTree();
                 cout << "\n" << count <<" Students enrolled\n\n"; //and give count
             }
             if (func == "Search"){ //if user types search, console will promt for name and return true or false
                 cout<<"Enter Name to Search: ";
                 cin >> data;
                 if (sTree.search(data)) {
-                    cout << data << " is found in the tree.\n\n";
-                    cout << "\n" << count <<" Students enrolled\n\n"; //and give count
-                } 
-                else {
-                    cout << data << " is not found in the tree.\n\n";
-                }
+            cout << data << " is found in the tree.\n\n";
+            cout << "\n" << count <<" Students enrolled\n\n"; //and give count
+            } 
+            else {
+            cout << data << " is not found in the tree.\n\n";
+            }
             }
             if (func == "Complete"){ //if user types complete program ends
                 break;
