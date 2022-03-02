@@ -1,4 +1,4 @@
-# splay-tree
+# Splay Tree Visualizer
 CSC 212 Project Group 26
 
 Project Report:
